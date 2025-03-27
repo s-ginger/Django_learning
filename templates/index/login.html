@@ -1,0 +1,26 @@
+{% extends "index/logreg.html" %}
+{% block title %}
+    <title>Login</title>
+{% endblock %}
+{% block style %}
+    <style>
+        body {
+            background-color: black;
+        }
+    </style>
+{% endblock style %}
+{% block logtainer %}
+    <div class="d-flex justify-content-center">
+        <form class="card shadow p-4 w-50" method="POST">
+            <h2>
+                Login
+            </h2>
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" class="btn btn-primary"></input>
+        </form>
+        
+    </div>
+{% endblock logtainer %}
+
+

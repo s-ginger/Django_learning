@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comment</title>
+</head>
+<body>
+    <div>
+
+    </div>
+    <div>
+        {% for comm in comment %}
+            <p>{{ comm.user }}: {{ comm.text }}</p>
+        {% endfor %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Send">
+        </form>
+    </div>
+</body>
+</html>
