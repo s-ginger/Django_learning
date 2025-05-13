@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ lesson.title }} | Урок</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0b0c10;
+      color: #e0dffb;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: linear-gradient(to right, #6a1b9a, #00c9ff);
+    }
+
+    .navbar .navbar-brand {
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    .navbar .navbar-brand:hover {
+      color: #f1f1f1;
+    }
+
+    .container {
+      max-width: 1200px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+    }
+
+    .lesson-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #bbdefb;
+      margin-bottom: 1.5rem;
+    }
+
+    .lesson-content {
+      font-size: 1.1rem;
+      color: #c5cae9;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .lesson-image {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 30px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-secondary {
+      background-color: #4db6ac;
+      border-color: #4db6ac;
+    }
+
+    .btn-secondary:hover {
+      background-color: #80cbc4;
+      border-color: #80cbc4;
+      transform: scale(1.05);
+    }
+
+    .btn-primary {
+      background-color: #6a1b9a;
+      border-color: #6a1b9a;
+    }
+
+    .btn-primary:hover {
+      background-color: #9c4dcc;
+      border-color: #9c4dcc;
+      transform: scale(1.05);
+    }
+
+    .lesson-navigation {
+      margin-top: 3rem;
+    }
+
+    .text-muted {
+      font-size: 0.9rem;
+    }
+
+    footer {
+      background-color: #0a0a0a;
+      padding: 20px;
+      text-align: center;
+      color: #888;
+    }
+
+    footer a {
+      color: #80cbc4;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark px-3 shadow">
+  <a class="navbar-brand" href="{% url 'main' %}">EduPlatform</a>
+</nav>
+
+<!-- Контент -->
+<div class="container">
+  <h1 class="lesson-title">{{ lesson.title }}</h1>
+
+  {% if lesson.image %}
+    <img src="{{ lesson.image.url }}" alt="Lesson Image" class="lesson-image">
+  {% endif %}
+
+  <div class="lesson-content">
+    {{ lesson.content|linebreaks }}
+  </div>
+
+  <div class="lesson-navigation">
+    <a href="{% url 'course_lessons' lesson.course.id %}" class="btn btn-secondary">← Назад к курсу</a>
+
+    {% if next_lesson %}
+      <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary float-end">
+        Следующий урок → {{ next_lesson.title }}
+      </a>
+    {% else %}
+      <p class="mt-4 text-muted text-end">Это последний урок.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2025 EduPlatform. Все права защищены.</p>
+  <p>
+    <a href="#">Политика конфиденциальности</a> | 
+    <a href="#">Условия использования</a>
+  </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserForm, LoginForm, CommentForm
 from django.contrib.auth import authenticate, login, logout as auth_logout
 from django.views import View
@@ -8,8 +8,10 @@ from django.contrib import messages
 def main_page(request):
     return render(request, 'index/mainpage.html', {'user': request.user if request.user.is_authenticated else None})
 
-def courses_page(request):
-    return render(request, 'index/courses.html')
+def courses_view(request):
+    courses = Course.objects.all()  # Получаем все курсы из базы
+    return render(request, 'index/courses.html', {'courses': courses})
+
 
 def logout_view(request):
     auth_logout(request)
@@ -65,3 +67,48 @@ def register(request):
         form = CustomUserForm()
 
     return render(request, 'index/register.html', {'form': form})
+
+# views.py
+
+def course_lessons_view(request, course_id):
+    course = get_object_or_404(Course, id=course_id)  # Получаем курс по ID
+    lessons = course.lessons.all()  # Получаем все уроки этого курса
+    return render(request, 'index/courses_detail.html', {'course': course, 'lessons': lessons})
+# views.py
+
+# views.py
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import LessonForm
+from .models import CustomUser, Course
+
+@login_required
+def create_lesson(request):
+    if request.user.role != 'teacher':
+        return redirect('main')  # Если пользователь не учитель, перенаправляем на главную страницу
+
+    if request.method == 'POST':
+        form = LessonForm(request.POST, request.FILES, user=request.user)  # Передаем пользователя в форму
+        if form.is_valid():
+            lesson = form.save(commit=False)
+            lesson.course = form.cleaned_data['course']
+            lesson.save()
+            return redirect('course_lessons', course_id=lesson.course.id)  # Перенаправляем на страницу курса
+    else:
+        form = LessonForm(user=request.user)  # Передаем пользователя при GET-запросе
+
+    return render(request, 'index/create_lesson.html', {'form': form})
+
+from .models import Lesson
+
+def lesson_detail_view(request, lesson_id):
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+    
+    # Найти следующий урок по ID в рамках того же курса
+    next_lesson = Lesson.objects.filter(course=lesson.course, id__gt=lesson.id).order_by('id').first()
+
+    return render(request, 'index/lesson_detail.html', {
+        'lesson': lesson,
+        'next_lesson': next_lesson
+    })
