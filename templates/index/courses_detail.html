@@ -9,15 +9,17 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-      background-color: #0b0c10;
-      color: #ffffff;
+      background-color: #0b0c10; /* Очень темный фон */
+      color: #ffffff; /* Белый текст */
       font-family: 'Segoe UI', sans-serif;
       min-height: 100vh;
       margin: 0;
     }
+
     /* Navbar */
     .navbar {
-      background: linear-gradient(to right, #9c27b0, #3f51b5, #00bcd4); /* Яркий фиолетовый и голубой */
+      background-color: #000000; /* Черный фон для navbar */
+      box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1); /* Белая тень под navbar */
     }
     .navbar .navbar-brand {
       font-weight: bold;
@@ -33,22 +35,24 @@
     .navbar-toggler-icon {
       background-color: #fff;
     }
+
     /* Заголовки секций */
     .section-title {
       font-size: 2.8rem;
       font-weight: bold;
-      color: #bb86fc; /* Яркий фиолетовый */
+      color: #007bff; /* Синий */
       margin-bottom: 1rem;
     }
     .section-description {
       font-size: 1.3rem;
-      color: #80deea; /* Легкий голубой для описания */
+      color: #80deea; /* Легкий голубой */
       margin-bottom: 2rem;
     }
+
     /* Карточки уроков */
     .lesson-card {
-      background-color: #121212;
-      border-left: 5px solid #ff4081; /* Розовый акцент */
+      background-color: #121212; /* Тёмный фон карточки */
+      border-left: 5px solid #00bcd4; /* Голубой акцент */
       border-radius: 10px;
       padding: 1.5rem;
       margin-bottom: 1.5rem;
@@ -56,7 +60,7 @@
     }
     .lesson-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 6px 20px rgba(255, 64, 129, 0.5); /* Эффект розового при наведении */
+      box-shadow: 0 6px 20px rgba(0, 188, 212, 0.5); /* Эффект голубого при наведении */
     }
     .lesson-card a {
       text-decoration: none;
@@ -66,11 +70,12 @@
       transition: color 0.3s ease;
     }
     .lesson-card a:hover {
-      color: #bb86fc; /* Фиолетовый при наведении */
+      color: #007bff; /* Синий при наведении */
     }
+
     /* Footer */
     footer {
-      background-color: #0a0a0a;
+      background-color: #000000; /* Чёрный фон футера */
       padding: 2rem 0;
       color: #888;
       text-align: center;
@@ -81,8 +86,9 @@
       text-decoration: none;
     }
     footer a:hover {
-      color: #bb86fc;
+      color: #007bff; /* Синий при наведении */
     }
+
     /* Мобильная версия */
     @media (max-width: 768px) {
       .lesson-card {
