@@ -79,7 +79,7 @@ def course_lessons_view(request, course_id):
 
 
 def profile_view(request):
-    return render(request, 'index/profile.html', {'user': request.user})
+    return render(request, 'index/cabinet.html', {'user': request.user})
 
 
 @login_required
