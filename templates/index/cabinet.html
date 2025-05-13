@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0b0c10;
+            color: white;
+        }
+        .card {
+            background-color: #1e272e;
+            color: white;
+            border: none;
+            transition: 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(0,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4" href="{% url 'main' %}">EduPlatform</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'chat' %}">Chat</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'courses' %}">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'create_lesson' %}">create_lesson</a></li>
+                
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><span class="nav-link">Hi, {{ user.username }}</span></li>
+                        <li class="nav-item"><a class="btn btn-outline-light" href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a></li>
+                        <li class="nav-item"><a class="btn btn-primary" href="{% url 'register' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if user.role == "teacher" or user.role == "Teacher" %}
+        <div class="container py-5">
+            <h2 class="text-center mb-5">👨‍🏫 Личный кабинет преподавателя</h2>
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="card p-4">
+                        <i class="bi bi-plus-circle fs-1 text-info"></i>
+                        <h5 class="mt-3">Создать курс</h5>
+                        <p>Создайте новый образовательный курс</p>
+                        <a href="#" class="btn btn-primary mt-2">Создать</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4">
+                        <i class="bi bi-journal-text fs-1 text-info"></i>
+                        <h5 class="mt-3">Уроки и Курсы</h5>
+                        <p>Управление вашими курсами и уроками</p>
+                        <a href="#" class="btn btn-outline-light mt-2">Управлять</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4">
+                        <i class="bi bi-bar-chart-line fs-1 text-info"></i>
+                        <h5 class="mt-3">Статистика</h5>
+                        <p>Отслеживание активности студентов</p>
+                        <a href="#" class="btn btn-outline-info mt-2">Посмотреть</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elif user.role == "student" or user.role == "Student" %}
+        <div class="container py-5">
+        <h2 class="text-center mb-5">🎓 Личный кабинет студента</h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <i class="bi bi-journal-code fs-1 text-info"></i>
+                    <h5 class="mt-3">Мои курсы</h5>
+                    <p>Список курсов, на которые вы записаны</p>
+                    <a href="#" class="btn btn-primary mt-2">Перейти</a>
+                </div>
+            </div>
+                <div class="col-md-4">
+                    <div class="card p-4">
+                        <i class="bi bi-graph-up-arrow fs-1 text-info"></i>
+                        <h5 class="mt-3">Прогресс</h5>
+                        <p>Отслеживайте выполнение и прогресс</p>
+                        <a href="#" class="btn btn-outline-light mt-2">Посмотреть</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4">
+                        <i class="bi bi-patch-check fs-1 text-info"></i>
+                        <h5 class="mt-3">Сертификаты</h5>
+                        <p>Загружайте сертификаты по пройденным курсам</p>
+                        <a href="#" class="btn btn-outline-success mt-2">Открыть</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
+    <!-- Footer -->
+<footer class="footer text-center text-white">
+    <div class="container">
+        <p class="mb-1">© 2025 EduPlatform. All rights reserved.</p>
+        <div>
+            <a href="#" class="text-light me-3"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="text-light me-3"><i class="bi bi-twitter"></i></a>
+            <a href="#" class="text-light"><i class="bi bi-instagram"></i></a>
+        </div>
+    </div>
+</footer>
+
+
+</body>
+</html>
