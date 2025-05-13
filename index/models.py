@@ -15,5 +15,9 @@ class Comment(models.Model):
 
 
 class CustomUser(AbstractUser):
-    address = models.CharField(max_length=30, blank=True)
+    role = models.CharField(max_length=10, choices=[('admin', 'Admin'), ('user', 'User'), ('student', 'Student'), ('teacher', 'Teacher')], default='user')
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     birth_date = models.DateField(null=True, blank=False)
+    
+    def __str__(self):
+        return f"{self.username} - {self.role} - {self.birth_date}"
