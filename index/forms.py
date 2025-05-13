@@ -3,8 +3,19 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from .models import Comment, CustomUser
+from .models import Lesson, Course
 
-User = get_user_model()
+
+class LessonForm(forms.ModelForm):
+    class Meta:
+        model = Lesson
+        fields = ['course', 'title', 'content', 'image']
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user:
+            # Ограничиваем выбор курсов только для тех, которые принадлежат учителю
+            self.fields['course'].queryset = Course.objects.filter(instructor=user)
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150, required=True)

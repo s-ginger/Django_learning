@@ -16,18 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from index.views import main_page, logins, register, about, contact, logout_view, chat,courses_page
+from index.views import main_page, logins, register, about, contact, logout_view, chat,courses_view,create_lesson, course_lessons_view,lesson_detail_view
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', main_page, name='main'),
-    path('courses/', courses_page, name='courses'),
+    path('courses/', courses_view, name='courses'),
     path('login/', logins, name='login'),
     path('logout/', logout_view, name='logout'),
     path('chat/', chat, name='chat'),
     path('register/', register, name='register'),
     path('about/', about, name='about'),
     path('contact/', contact, name='contact'),
+    path('create_lesson/', create_lesson, name='create_lesson'),
+    path('lesson/<int:lesson_id>/', lesson_detail_view, name='lesson_detail'),
+    path('course/<int:course_id>/lessons/', course_lessons_view, name='course_lessons'),  # Страница с уроками курса
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
