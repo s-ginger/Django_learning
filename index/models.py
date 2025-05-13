@@ -1,7 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import  AbstractBaseUser
 from mydjango.settings import AUTH_USER_MODEL
 
 # Create your models here.
@@ -15,15 +15,5 @@ class Comment(models.Model):
 
 
 class CustomUser(AbstractUser):
-    birth_date = models.DateField(null=True, blank=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures/%Y/%m/%d/', null=True, blank=True)
-    role = models.CharField(max_length=10, choices=[('teacher', 'Teacher'), ('student', 'Student')], default='student')
-    bio = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return self.username
-
-    def get_full_name(self):
-        """Возвращает полное имя пользователя."""
-        return f"{self.first_name} {self.last_name}"
-
+    address = models.CharField(max_length=30, blank=True)
+    birth_date = models.DateField(null=True, blank=False)
