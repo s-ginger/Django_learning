@@ -2,20 +2,18 @@ from django.shortcuts import render, redirect
 from .forms import CustomUserForm, LoginForm, CommentForm
 from django.contrib.auth import authenticate, login, logout as auth_logout
 from django.views import View
-from django.contrib.auth.models import User
 from .models import Comment
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 
 def main_page(request):
     return render(request, 'index/mainpage.html', {'user': request.user if request.user.is_authenticated else None})
 
 def courses_page(request):
-    return render(request,'index/courses.html')
+    return render(request, 'index/courses.html')
+
 def logout_view(request):
     auth_logout(request)
     return redirect('main')
-
 
 def logins(request):
     if request.method == 'POST':
@@ -31,8 +29,7 @@ def logins(request):
                 form.add_error(None, 'Username or password is incorrect')
     else:
         form = LoginForm()
-    return render(request, 'index/login.html', {'form': form})
-
+    return render(request, 'index/logreg.html', {'form': form})
 
 def chat(request):
     form = CommentForm()
@@ -49,24 +46,22 @@ def chat(request):
         
     return render(request, 'index/chat.html', {'form': form, 'comment': comments})
 
-
 def about(request):
     return render(request, 'index/about.html')
-
 
 def contact(request):
     return render(request, 'index/about.html')
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserForm(request.POST)
         if form.is_valid():
-            form.save()  # Сохраняем нового пользователя
+            form.save()  # Сохраняем нового пользователя через кастомную форму
             messages.success(request, f'Account created for {form.cleaned_data.get("username")}!')
             return redirect('login')  # Перенаправляем на страницу логина
         else:
             messages.error(request, 'There was an error with your registration form.')
     else:
-        form = UserCreationForm()
+        form = CustomUserForm()
 
     return render(request, 'index/register.html', {'form': form})
