@@ -21,3 +21,39 @@ class CustomUser(AbstractUser):
     
     def __str__(self):
         return f"{self.username} - {self.role} - {self.birth_date}"
+
+
+class Course(models.Model):
+    title = models.CharField(max_length=100)
+    instructor = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        related_name='courses',
+        limit_choices_to={'role': 'teacher'} 
+        )
+    
+    students = models.ManyToManyField(
+        CustomUser, 
+        related_name='enrolled_courses', 
+        blank=True,
+        limit_choices_to={'role': 'student'}
+        )
+    
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.title
+    
+    
+class Lesson(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    image = models.ImageField(upload_to='lesson_images/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
