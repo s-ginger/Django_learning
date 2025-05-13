@@ -16,15 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from index.views import main_page, logins, Register, about, contact, logout, chat
+from index.views import main_page, logins, register, about, contact, logout_view, chat,courses_page
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', main_page, name='main'),
+    path('courses/', courses_page, name='courses'),
     path('login/', logins, name='login'),
-    path('logout/', logout, name='logout'),
+    path('logout/', logout_view, name='logout'),
     path('chat/', chat, name='chat'),
-    path('register/', Register.as_view(), name='register'),
+    path('register/', register, name='register'),
     path('about/', about, name='about'),
     path('contact/', contact, name='contact'),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

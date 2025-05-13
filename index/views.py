@@ -1,54 +1,50 @@
 from django.shortcuts import render, redirect
 from .forms import CustomUserForm, LoginForm, CommentForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout as auth_logout
 from django.views import View
 from django.contrib.auth.models import User
-from django.views.decorators.csrf import csrf_protect
 from .models import Comment
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 
-# Create your views here.
 def main_page(request):
-    username = request.session.get('username')
-    print(username)
-    if username:
-        user = User.objects.get(username=username)
-        return render(request, 'index/mainpage.html', {'user': user})
-    else:
-        return render(request, 'index/mainpage.html', {'user': None})
+    return render(request, 'index/mainpage.html', {'user': request.user if request.user.is_authenticated else None})
 
-def logout(request):
-    del request.session['username']
+def courses_page(request):
+    return render(request,'index/courses.html')
+def logout_view(request):
+    auth_logout(request)
     return redirect('main')
+
 
 def logins(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
             if user:
                 login(request, user)
-                request.session['username'] = user.username
                 return redirect('main')
             else:
-                form.add_error('username', 'Username or password is incorrect')
-    form = LoginForm()
+                form.add_error(None, 'Username or password is incorrect')
+    else:
+        form = LoginForm()
     return render(request, 'index/login.html', {'form': form})
 
-@csrf_protect
+
 def chat(request):
     form = CommentForm()
     comments = Comment.objects.all()
+    
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
-            if not request.user.is_authenticated or request.session.get('username') == None:
+            if not request.user.is_authenticated:
                 return redirect('register')
             
-            user = request.user
-            comment = Comment(user=user, text=form.cleaned_data.get('text'))
-            comment.save()
+            Comment.objects.create(user=request.user, text=form.cleaned_data['text'])
             return redirect('chat')
         
     return render(request, 'index/chat.html', {'form': form, 'comment': comments})
@@ -57,34 +53,20 @@ def chat(request):
 def about(request):
     return render(request, 'index/about.html')
 
+
 def contact(request):
     return render(request, 'index/about.html')
 
-class Register(View):
-    template_name = 'index/register.html'
-    
-    def get(self, request):
-        form = CustomUserForm()
-        return render(request, self.template_name, {'form': form})
-    
-    def post(self, request):
-        form = CustomUserForm(request.POST)
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
         if form.is_valid():
-            if form.cleaned_data.get('password1') == form.cleaned_data.get('password2'):
-                user = form.save()
-                username = form.cleaned_data.get('username')
-                password = form.cleaned_data.get('password1')
-            else:
-                form.add_error('password2', 'Password does not match')
-            user = authenticate(username=username, password=password)
-            if user:
-                login(request, user)
-            
-            request.session['username'] = user.username
-            
-            return redirect('main')
-            
-        return render(request, self.template_name, {'form': form})
+            form.save()  # Сохраняем нового пользователя
+            messages.success(request, f'Account created for {form.cleaned_data.get("username")}!')
+            return redirect('login')  # Перенаправляем на страницу логина
+        else:
+            messages.error(request, 'There was an error with your registration form.')
+    else:
+        form = UserCreationForm()
 
-
-
+    return render(request, 'index/register.html', {'form': form})
