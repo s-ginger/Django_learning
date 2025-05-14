@@ -102,31 +102,32 @@ def create_lesson(request):
 
 from .models import Lesson
 
-from .models import CommentCourse
-from .forms import CommentCourseForm
-
 from django.shortcuts import get_object_or_404, redirect, render
+from .models import Lesson
 from .models import Lesson, CommentCourse
 from .forms import CommentCourseForm
-
 def lesson_detail_view(request, lesson_id):
-    lesson = get_object_or_404(Lesson, id=lesson_id)  # ✅ Вот этого не хватало
+    lesson = get_object_or_404(Lesson, id=lesson_id)
 
+    # Получаем все уроки курса и находим следующий по id
+    course_lessons = Lesson.objects.filter(course=lesson.course).order_by('id')
+    next_lesson = course_lessons.filter(id__gt=lesson.id).first()
+
+    # Комментарии к уроку
     comments = CommentCourse.objects.filter(lesson=lesson).order_by('-created_at')
 
-    if request.method == 'POST':
-        form = CommentCourseForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.user = request.user
-            comment.lesson = lesson
-            comment.save()
-            return redirect('lesson_detail', lesson_id=lesson.id)
-    else:
-        form = CommentCourseForm()
+    # Обработка формы комментариев
+    form = CommentCourseForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        comment = form.save(commit=False)
+        comment.user = request.user
+        comment.lesson = lesson
+        comment.save()
 
-    return render(request, 'index/lesson_detail.html', {
+    context = {
         'lesson': lesson,
+        'next_lesson': next_lesson,
         'comments': comments,
-        'form': form,
-    })
+        'form': form
+    }
+    return render(request, 'index/lesson_detail.html', context)
