@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Прохождение теста</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0b0c10;
+            color: white;
+        }
+        .question-block {
+            background-color: #1e272e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .form-check-label {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Навбар (оставь как в оригинале или вставь свой) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 shadow">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-4" href="{% url 'main' %}">EduPlatform</a>
+        <!-- остальная часть навбара -->
+    </div>
+</nav>
+
+<!-- Контент -->
+<div class="container py-5">
+    <h2 class="mb-4 text-center">🧠 Тест по Python</h2>
+    <form method="post" action="{% url 'submit_test' %}">
+        {% csrf_token %}
+
+        <!-- Вопрос 1 -->
+        <div class="question-block">
+            <h5>1. Что выведет команда <code>print(2 ** 3)</code>?</h5>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="q1" id="q1a" value="a">
+                <label class="form-check-label" for="q1a">6</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="q1" id="q1b" value="b">
+                <label class="form-check-label" for="q1b">8</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="q1" id="q1c" value="c">
+                <label class="form-check-label" for="q1c">9</label>
+            </div>
+        </div>
+
+        <!-- Вопрос 2 -->
+        <div class="question-block">
+            <h5>2. Какой тип данных у значения <code>[1, 2, 3]</code>?</h5>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="q2" id="q2a" value="a">
+                <label class="form-check-label" for="q2a">tuple</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="q2" id="q2b" value="b">
+                <label class="form-check-label" for="q2b">list</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="q2" id="q2c" value="c">
+                <label class="form-check-label" for="q2c">set</label>
+            </div>
+        </div>
+
+        <!-- Вопрос 3 -->
+        <div class="question-block">
+            <h5>3. Какой результат у выражения <code>bool("")</code>?</h5>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="q3" id="q3a" value="a">
+                <label class="form-check-label" for="q3a">True</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="q3" id="q3b" value="b">
+                <label class="form-check-label" for="q3b">False</label>
+            </div>
+        </div>
+
+        <!-- Кнопка отправки -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success px-4 py-2">Отправить ответы</button>
+        </div>
+    </form>
+</div>
+
+<!-- Подвал -->
+<footer class="footer text-center text-white mt-5">
+    <div class="container">
+        <p class="mb-1">© 2025 EduPlatform. Все права защищены.</p>
+    </div>
+</footer>
+
+</body>
+</html>
