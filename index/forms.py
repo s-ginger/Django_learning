@@ -38,3 +38,21 @@ class CustomUserForm(UserCreationForm):
         if commit:
             user.save()  # Сохраняем пользователя
         return user
+from .models import CommentCourse
+
+from django import forms
+from .models import CommentCourse
+
+class CommentCourseForm(forms.ModelForm):
+    class Meta:
+        model = CommentCourse
+        fields = ['content']
+        widgets = {
+            'text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ваш комментарий...',
+                'rows': 4
+            })
+        }
+
+

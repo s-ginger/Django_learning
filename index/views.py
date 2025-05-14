@@ -81,7 +81,8 @@ def course_lessons_view(request, course_id):
 def profile_view(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
 
-
+def profile(request):
+    return render(request, 'index/cabinet.html', {'user': request.user})
 @login_required
 def create_lesson(request):
     if request.user.role != 'teacher':
@@ -101,13 +102,31 @@ def create_lesson(request):
 
 from .models import Lesson
 
+from .models import CommentCourse
+from .forms import CommentCourseForm
+
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Lesson, CommentCourse
+from .forms import CommentCourseForm
+
 def lesson_detail_view(request, lesson_id):
-    lesson = get_object_or_404(Lesson, id=lesson_id)
-    
-    # Найти следующий урок по ID в рамках того же курса
-    next_lesson = Lesson.objects.filter(course=lesson.course, id__gt=lesson.id).order_by('id').first()
+    lesson = get_object_or_404(Lesson, id=lesson_id)  # ✅ Вот этого не хватало
+
+    comments = CommentCourse.objects.filter(lesson=lesson).order_by('-created_at')
+
+    if request.method == 'POST':
+        form = CommentCourseForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.lesson = lesson
+            comment.save()
+            return redirect('lesson_detail', lesson_id=lesson.id)
+    else:
+        form = CommentCourseForm()
 
     return render(request, 'index/lesson_detail.html', {
         'lesson': lesson,
-        'next_lesson': next_lesson
+        'comments': comments,
+        'form': form,
     })

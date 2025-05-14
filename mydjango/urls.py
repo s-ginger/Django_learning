@@ -26,7 +26,7 @@ from index.views import (
                          chat,
                          courses_view,create_lesson, 
                          course_lessons_view,lesson_detail_view,
-                         profile_view
+                         profile_view,profile
                          )
 
 from django.conf import settings
@@ -34,6 +34,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('profile/', profile, name='profile'),
     path('', main_page, name='main'),
     path('courses/', courses_view, name='courses'),
     path('login/', logins, name='login'),
