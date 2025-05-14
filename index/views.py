@@ -1,24 +1,26 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CustomUserForm, LoginForm, CommentForm
 from django.contrib.auth import authenticate, login, logout as auth_logout
-from django.views import View
-from .models import Comment
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import LessonForm
-from .models import CustomUser, Course
+from .models import Course, Lesson, CommentCourse, Comment
+from .forms import CustomUserForm, LoginForm, CommentForm, CommentCourseForm, LessonForm
+from django.shortcuts import get_object_or_404, redirect, render
+
 
 def main_page(request):
     return render(request, 'index/mainpage.html', {'user': request.user if request.user.is_authenticated else None})
+
 
 def courses_view(request):
     courses = Course.objects.all()  # Получаем все курсы из базы
     return render(request, 'index/courses.html', {'courses': courses})
 
+
 def logout_view(request):
     auth_logout(request)
     return redirect('main')
+
 
 def logins(request):
     if request.method == 'POST':
@@ -36,6 +38,7 @@ def logins(request):
         form = LoginForm()
     return render(request, 'index/logreg.html', {'form': form})
 
+
 def chat(request):
     form = CommentForm()
     comments = Comment.objects.all()
@@ -51,11 +54,14 @@ def chat(request):
         
     return render(request, 'index/chat.html', {'form': form, 'comment': comments})
 
+
 def about(request):
     return render(request, 'index/about.html')
 
+
 def contact(request):
     return render(request, 'index/about.html')
+
 
 def register(request):
     if request.method == 'POST':
@@ -81,8 +87,11 @@ def course_lessons_view(request, course_id):
 def profile_view(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
 
+
 def profile(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
+
+
 @login_required
 def create_lesson(request):
     if request.user.role != 'teacher':
@@ -100,12 +109,7 @@ def create_lesson(request):
 
     return render(request, 'index/create_lesson.html', {'form': form})
 
-from .models import Lesson
 
-from django.shortcuts import get_object_or_404, redirect, render
-from .models import Lesson
-from .models import Lesson, CommentCourse
-from .forms import CommentCourseForm
 def lesson_detail_view(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
 

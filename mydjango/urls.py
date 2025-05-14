@@ -16,21 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from index.views import ( 
-                         main_page, 
-                         logins, 
-                         register, 
-                         about, 
-                         contact, 
-                         logout_view, 
-                         chat,
-                         courses_view,create_lesson, 
-                         course_lessons_view,lesson_detail_view,
-                         profile_view,profile
-                         )
-
 from django.conf import settings
 from django.conf.urls.static import static
+
+from index.views import ( 
+    main_page, 
+    logins, 
+    register, 
+    about, 
+    contact, 
+    logout_view, 
+    chat,
+    courses_view,create_lesson, 
+    course_lessons_view,lesson_detail_view,
+    profile_view,profile
+)
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
