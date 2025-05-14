@@ -11,13 +11,16 @@ from django.shortcuts import get_object_or_404, redirect, render
 def main_page(request):
     return render(request, 'index/mainpage.html', {'user': request.user if request.user.is_authenticated else None})
 
+
 def courses_view(request):
     courses = Course.objects.all()  # Получаем все курсы из базы
     return render(request, 'index/courses.html', {'courses': courses})
 
+
 def logout_view(request):
     auth_logout(request)
     return redirect('main')
+
 
 def logins(request):
     if request.method == 'POST':
@@ -35,6 +38,7 @@ def logins(request):
         form = LoginForm()
     return render(request, 'index/logreg.html', {'form': form})
 
+
 def chat(request):
     form = CommentForm()
     comments = Comment.objects.all()
@@ -50,11 +54,14 @@ def chat(request):
         
     return render(request, 'index/chat.html', {'form': form, 'comment': comments})
 
+
 def about(request):
     return render(request, 'index/about.html')
 
+
 def contact(request):
     return render(request, 'index/about.html')
+
 
 def register(request):
     if request.method == 'POST':
@@ -80,8 +87,11 @@ def course_lessons_view(request, course_id):
 def profile_view(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
 
+
 def profile(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
+
+
 @login_required
 def create_lesson(request):
     if request.user.role != 'teacher':
