@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <title>Teacher Dashboard</title>
@@ -51,66 +52,73 @@
             </div>
         </div>
     </nav>
-
-    {% if user.role == "teacher" or user.role == "Teacher" %}
-        <div class="container py-5">
-            <h2 class="text-center mb-5">👨‍🏫 Личный кабинет преподавателя</h2>
+    {% if user.is_authenticated %}
+        {% if user.role == "teacher" or user.role == "Teacher" %}
+            <div class="container py-5">
+                <h2 class="text-center mb-5">👨‍🏫 Личный кабинет преподавателя {{ user.username }}</h2>
+                <div class="row g-4 text-center">
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <i class="bi bi-plus-circle fs-1 text-info"></i>
+                            <h5 class="mt-3">Создать курс</h5>
+                            <p>Создайте новый образовательный курс</p>
+                            <a href="{% url "create_lesson" %}" class="btn btn-primary mt-2">Создать</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <i class="bi bi-journal-text fs-1 text-info"></i>
+                            <h5 class="mt-3">Уроки и Курсы</h5>
+                            <p>Управление вашими курсами и уроками</p>
+                            <a href="#" class="btn btn-outline-light mt-2">Управлять</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <i class="bi bi-bar-chart-line fs-1 text-info"></i>
+                            <h5 class="mt-3">Статистика</h5>
+                            <p>Отслеживание активности студентов</p>
+                            <a href="#" class="btn btn-outline-info mt-2">Посмотреть</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% elif user.role == "student" or user.role == "Student" %}
+            <div class="container py-5">
+            <h2 class="text-center mb-5">🎓 Личный кабинет студента {{ user.username }}</h2>
             <div class="row g-4 text-center">
                 <div class="col-md-4">
                     <div class="card p-4">
-                        <i class="bi bi-plus-circle fs-1 text-info"></i>
-                        <h5 class="mt-3">Создать курс</h5>
-                        <p>Создайте новый образовательный курс</p>
-                        <a href="#" class="btn btn-primary mt-2">Создать</a>
+                        <i class="bi bi-journal-code fs-1 text-info"></i>
+                        <h5 class="mt-3">Мои курсы</h5>
+                        <p>Список курсов, на которые вы записаны</p>
+                        <a href="#" class="btn btn-primary mt-2">Перейти</a>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card p-4">
-                        <i class="bi bi-journal-text fs-1 text-info"></i>
-                        <h5 class="mt-3">Уроки и Курсы</h5>
-                        <p>Управление вашими курсами и уроками</p>
-                        <a href="#" class="btn btn-outline-light mt-2">Управлять</a>
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <i class="bi bi-graph-up-arrow fs-1 text-info"></i>
+                            <h5 class="mt-3">Прогресс</h5>
+                            <p>Отслеживайте выполнение и прогресс</p>
+                            <a href="#" class="btn btn-outline-light mt-2">Посмотреть</a>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-4">
-                        <i class="bi bi-bar-chart-line fs-1 text-info"></i>
-                        <h5 class="mt-3">Статистика</h5>
-                        <p>Отслеживание активности студентов</p>
-                        <a href="#" class="btn btn-outline-info mt-2">Посмотреть</a>
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <i class="bi bi-patch-check fs-1 text-info"></i>
+                            <h5 class="mt-3">Сертификаты</h5>
+                            <p>Загружайте сертификаты по пройденным курсам</p>
+                            <a href="#" class="btn btn-outline-success mt-2">Открыть</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    {% elif user.role == "student" or user.role == "Student" %}
+        {% endif %}
+    {% else %}
         <div class="container py-5">
-        <h2 class="text-center mb-5">🎓 Личный кабинет студента</h2>
-        <div class="row g-4 text-center">
-            <div class="col-md-4">
-                <div class="card p-4">
-                    <i class="bi bi-journal-code fs-1 text-info"></i>
-                    <h5 class="mt-3">Мои курсы</h5>
-                    <p>Список курсов, на которые вы записаны</p>
-                    <a href="#" class="btn btn-primary mt-2">Перейти</a>
-                </div>
-            </div>
-                <div class="col-md-4">
-                    <div class="card p-4">
-                        <i class="bi bi-graph-up-arrow fs-1 text-info"></i>
-                        <h5 class="mt-3">Прогресс</h5>
-                        <p>Отслеживайте выполнение и прогресс</p>
-                        <a href="#" class="btn btn-outline-light mt-2">Посмотреть</a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-4">
-                        <i class="bi bi-patch-check fs-1 text-info"></i>
-                        <h5 class="mt-3">Сертификаты</h5>
-                        <p>Загружайте сертификаты по пройденным курсам</p>
-                        <a href="#" class="btn btn-outline-success mt-2">Открыть</a>
-                    </div>
-                </div>
-            </div>
+            <h2 class="text-center mb-5">👤 Личный кабинет</h2>
+            <p class="text-center">Пожалуйста, войдите в систему, чтобы получить доступ к вашему кабинету.</p>
+            <a href="{% url 'login' %}" class="btn btn-primary d-block mx-auto">Войти</a>
         </div>
     {% endif %}
 

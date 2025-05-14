@@ -139,6 +139,37 @@
     {% endif %}
   </div>
 </div>
+<hr class="my-5" style="border-color: #444;">
+
+<h3 class="text-info mb-4">Комментарии</h3>
+
+<!-- Список комментариев -->
+<div class="mb-5">
+  {% for comment in comments %}
+    <div class="border rounded p-3 mb-3" style="background-color: #121212;">
+      <strong class="d-block text-light">{{ comment.user.username }}</strong>
+      <small class="text-muted">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+      <p class="mt-2 text-light">{{ comment.text }}</p>
+    </div>
+  {% empty %}
+    <p class="text-muted">Пока нет комментариев.</p>
+  {% endfor %}
+</div>
+
+<!-- Форма добавления комментария -->
+{% if user.is_authenticated %}
+  <h5 class="text-light mb-3">Добавить комментарий</h5>
+  <form method="post" class="mb-5">
+  {% csrf_token %}
+  <div class="mb-3">
+    {{ form.content }}
+  </div>
+  <button type="submit" class="btn btn-primary">Отправить</button>
+</form>
+
+{% else %}
+  <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
+{% endif %}
 
 <!-- Footer -->
 <footer>

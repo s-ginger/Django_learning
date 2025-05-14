@@ -4,6 +4,10 @@ from django.contrib.auth import authenticate, login, logout as auth_logout
 from django.views import View
 from .models import Comment
 from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import LessonForm
+from .models import CustomUser, Course
 
 def main_page(request):
     return render(request, 'index/mainpage.html', {'user': request.user if request.user.is_authenticated else None})
@@ -11,7 +15,6 @@ def main_page(request):
 def courses_view(request):
     courses = Course.objects.all()  # Получаем все курсы из базы
     return render(request, 'index/courses.html', {'courses': courses})
-
 
 def logout_view(request):
     auth_logout(request)
@@ -68,21 +71,18 @@ def register(request):
 
     return render(request, 'index/register.html', {'form': form})
 
-# views.py
 
 def course_lessons_view(request, course_id):
     course = get_object_or_404(Course, id=course_id)  # Получаем курс по ID
     lessons = course.lessons.all()  # Получаем все уроки этого курса
     return render(request, 'index/courses_detail.html', {'course': course, 'lessons': lessons})
-# views.py
 
-# views.py
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import LessonForm
-from .models import CustomUser, Course
+def profile_view(request):
+    return render(request, 'index/cabinet.html', {'user': request.user})
 
+def profile(request):
+    return render(request, 'index/cabinet.html', {'user': request.user})
 @login_required
 def create_lesson(request):
     if request.user.role != 'teacher':
@@ -102,13 +102,31 @@ def create_lesson(request):
 
 from .models import Lesson
 
+from .models import CommentCourse
+from .forms import CommentCourseForm
+
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Lesson, CommentCourse
+from .forms import CommentCourseForm
+
 def lesson_detail_view(request, lesson_id):
-    lesson = get_object_or_404(Lesson, id=lesson_id)
-    
-    # Найти следующий урок по ID в рамках того же курса
-    next_lesson = Lesson.objects.filter(course=lesson.course, id__gt=lesson.id).order_by('id').first()
+    lesson = get_object_or_404(Lesson, id=lesson_id)  # ✅ Вот этого не хватало
+
+    comments = CommentCourse.objects.filter(lesson=lesson).order_by('-created_at')
+
+    if request.method == 'POST':
+        form = CommentCourseForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.lesson = lesson
+            comment.save()
+            return redirect('lesson_detail', lesson_id=lesson.id)
+    else:
+        form = CommentCourseForm()
 
     return render(request, 'index/lesson_detail.html', {
         'lesson': lesson,
-        'next_lesson': next_lesson
+        'comments': comments,
+        'form': form,
     })
