@@ -4,182 +4,97 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ lesson.title }} | Урок</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body {
-      background-color: #0b0c10;
-      color: #e0dffb;
-      font-family: 'Segoe UI', sans-serif;
-      min-height: 100vh;
+    /* Добавляем анимацию на элементы при скролле */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-
-    .navbar {
-      background: linear-gradient(to right, #6a1b9a, #00c9ff);
-    }
-
-    .navbar .navbar-brand {
-      color: #ffffff;
-      font-weight: bold;
-    }
-
-    .navbar .navbar-brand:hover {
-      color: #f1f1f1;
-    }
-
-    .container {
-      max-width: 1200px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-    }
-
-    .lesson-title {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #bbdefb;
-      margin-bottom: 1.5rem;
-    }
-
-    .lesson-content {
-      font-size: 1.1rem;
-      color: #c5cae9;
-      line-height: 1.7;
-      margin-bottom: 2rem;
-    }
-
-    .lesson-image {
-      max-width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      margin-bottom: 2rem;
-    }
-
-    .btn {
-      padding: 12px 24px;
-      font-size: 1rem;
-      font-weight: 600;
-      border-radius: 30px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .btn-secondary {
-      background-color: #4db6ac;
-      border-color: #4db6ac;
-    }
-
-    .btn-secondary:hover {
-      background-color: #80cbc4;
-      border-color: #80cbc4;
-      transform: scale(1.05);
-    }
-
-    .btn-primary {
-      background-color: #6a1b9a;
-      border-color: #6a1b9a;
-    }
-
-    .btn-primary:hover {
-      background-color: #9c4dcc;
-      border-color: #9c4dcc;
-      transform: scale(1.05);
-    }
-
-    .lesson-navigation {
-      margin-top: 3rem;
-    }
-
-    .text-muted {
-      font-size: 0.9rem;
-    }
-
-    footer {
-      background-color: #0a0a0a;
-      padding: 20px;
-      text-align: center;
-      color: #888;
-    }
-
-    footer a {
-      color: #80cbc4;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      color: #ffffff;
+    .fade-in {
+      animation: fadeIn 1s ease-out forwards;
     }
   </style>
 </head>
-<body>
+<body class="bg-gray-900 text-gray-200">
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark px-3 shadow">
-  <a class="navbar-brand" href="{% url 'main' %}">EduPlatform</a>
-</nav>
+<!-- Контейнер для всего сайта -->
+<div class="container mx-auto px-6">
 
-<!-- Контент -->
-<div class="container">
-  <h1 class="lesson-title">{{ lesson.title }}</h1>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark px-3 shadow" style="background: linear-gradient(to right, #6a1b9a, #00c9ff);">
+    <a class="navbar-brand text-xl font-semibold" href="{% url 'main' %}">EduPlatform</a>
+  </nav>
 
-  {% if lesson.image %}
-    <img src="{{ lesson.image.url }}" alt="Lesson Image" class="lesson-image">
+  <!-- Контент -->
+  <div class="py-12">
+    <h1 class="text-center text-4xl text-white font-bold">{{ lesson.title }}</h1>
+    
+    <div class="my-6 text-lg text-light mb-6">
+      {{ lesson.content|linebreaks }}
+    </div>
+
+    <div class="flex justify-center">
+      {% if lesson.image %}
+        <img src="{{ lesson.image.url }}" alt="Lesson Image" class="max-w-full h-96 object-cover rounded-lg shadow-xl">
+      {% endif %}
+    </div>
+
+    <div class="mb-6 flex justify-between items-center">
+      <a href="{% url 'course_lessons' lesson.course.id %}" class="btn btn-secondary text-white bg-gray-600 px-4 py-2 rounded-lg shadow-lg hover:bg-gray-500 transition">← Назад к курсу</a>
+      {% if next_lesson %}
+        <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary text-white bg-purple-600 px-4 py-2 rounded-lg shadow-lg hover:bg-purple-500 transition">Следующий урок → {{ next_lesson.title }}</a>
+      {% else %}
+        <p class="text-gray-400">Это последний урок.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <hr class="my-6 border-t-2 border-gray-700">
+
+  <h3 class="text-3xl text-purple-500 mb-6 fade-in">Комментарии</h3>
+
+  <!-- Список комментариев -->
+  <div class="space-y-6 fade-in">
+    {% for comment in comments %}
+      <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+        <div class="text-purple-400 text-lg">{{ comment.user.username }} <span class="text-gray-400 text-sm">{{ comment.created_at|date:"d.m.Y H:i" }}</span></div>
+        <p class="text-gray-300">{{ comment.text }}</p>
+      </div>
+    {% empty %}
+      <p class="text-gray-500">Пока нет комментариев.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Форма добавления комментария -->
+  {% if user.is_authenticated %}
+    <h5 class="text-xl text-white mb-4 mt-12">Добавить комментарий</h5>
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div class="mb-4">{{ form.content }}</div>
+      <button type="submit" class="btn btn-primary bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-500 transition">Отправить</button>
+    </form>
+  {% else %}
+    <p class="mt-6 text-gray-400">Войдите <a href="{% url 'login' %}" class="text-purple-500">здесь</a>, чтобы оставить комментарий.</p>
   {% endif %}
 
-  <div class="lesson-content">
-    {{ lesson.content|linebreaks }}
-  </div>
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-center text-gray-400 py-6 mt-12">
+    <p>&copy; 2025 EduPlatform. Все права защищены.</p>
+    <p>
+      <a href="#" class="text-purple-500 hover:text-purple-300">Политика конфиденциальности</a> | 
+      <a href="#" class="text-purple-500 hover:text-purple-300">Условия использования</a>
+    </p>
+  </footer>
 
-  <div class="lesson-navigation">
-    <a href="{% url 'course_lessons' lesson.course.id %}" class="btn btn-secondary">← Назад к курсу</a>
-
-    {% if next_lesson %}
-      <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary float-end">
-        Следующий урок → {{ next_lesson.title }}
-      </a>
-    {% else %}
-      <p class="mt-4 text-muted text-end">Это последний урок.</p>
-    {% endif %}
-  </div>
-</div>
-<hr class="my-5" style="border-color: #444;">
-
-<h3 class="text-info mb-4">Комментарии</h3>
-
-<!-- Список комментариев -->
-<div class="mb-5">
-  {% for comment in comments %}
-    <div class="border rounded p-3 mb-3" style="background-color: #121212;">
-      <strong class="d-block text-light">{{ comment.user.username }}</strong>
-      <small class="text-muted">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
-      <p class="mt-2 text-light">{{ comment.text }}</p>
-    </div>
-  {% empty %}
-    <p class="text-muted">Пока нет комментариев.</p>
-  {% endfor %}
 </div>
 
-<!-- Форма добавления комментария -->
-{% if user.is_authenticated %}
-  <h5 class="text-light mb-3">Добавить комментарий</h5>
-  <form method="post" class="mb-5">
-  {% csrf_token %}
-  <div class="mb-3">
-    {{ form.content }}
-  </div>
-  <button type="submit" class="btn btn-primary">Отправить</button>
-</form>
-
-{% else %}
-  <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
-{% endif %}
-
-<!-- Footer -->
-<footer>
-  <p>&copy; 2025 EduPlatform. Все права защищены.</p>
-  <p>
-    <a href="#">Политика конфиденциальности</a> | 
-    <a href="#">Условия использования</a>
-  </p>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
 </body>
 </html>
