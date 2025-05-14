@@ -5,10 +5,13 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../'))  # Указывает Sphinx искать модули в родительской директории
+import django
+
+sys.path.insert(0, os.path.abspath('../..'))  # путь до проекта, где manage.py
+os.environ['DJANGO_SETTINGS_MODULE'] = 'mydjango.settings'  # поменяй на свой модуль настроек
+django.setup()
 
 project = 'eduplatform'
 copyright = '2025, Stepan && Samir'
