@@ -4,6 +4,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from .models import Comment, CustomUser
 from .models import Lesson, Course
+from .models import CommentCourse
+from django import forms
+from .models import CommentCourse
 
 
 class LessonForm(forms.ModelForm):
@@ -17,14 +20,17 @@ class LessonForm(forms.ModelForm):
             # Ограничиваем выбор курсов только для тех, которые принадлежат учителю
             self.fields['course'].queryset = Course.objects.filter(instructor=user)
 
+
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150, required=True)
     password = forms.CharField(widget=forms.PasswordInput, required=True)
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('text',)
+
 
 class CustomUserForm(UserCreationForm):
     bio = forms.CharField(widget=forms.Textarea, required=False, label="Биография")
@@ -38,10 +44,7 @@ class CustomUserForm(UserCreationForm):
         if commit:
             user.save()  # Сохраняем пользователя
         return user
-from .models import CommentCourse
 
-from django import forms
-from .models import CommentCourse
 
 class CommentCourseForm(forms.ModelForm):
     class Meta:
