@@ -6,6 +6,7 @@ from mydjango.settings import AUTH_USER_MODEL
 
 # Create your models here.
 class Comment(models.Model):
+    '''Класс для комментариев в чате'''
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
@@ -15,6 +16,7 @@ class Comment(models.Model):
 
 
 class CustomUser(AbstractUser):
+    '''Класс для кастомной модели пользователя'''
     role = models.CharField(max_length=10, choices=[('admin', 'Admin'), ('user', 'User'), ('student', 'Student'), ('teacher', 'Teacher')], default='student')
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     birth_date = models.DateField(null=True, blank=False)
@@ -24,6 +26,7 @@ class CustomUser(AbstractUser):
 
 
 class Course(models.Model):
+    '''Класс для курсов'''
     title = models.CharField(max_length=100)
     instructor = models.ForeignKey(
         CustomUser, 
@@ -48,6 +51,7 @@ class Course(models.Model):
     
 
 class Lesson(models.Model):
+    '''Класс для уроков'''
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
     title = models.CharField(max_length=100)
     content = models.TextField()
@@ -60,6 +64,7 @@ class Lesson(models.Model):
     
     
 class CommentCourse(models.Model):
+    '''Класс для комментариев к курсам'''
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     content = models.TextField()
@@ -70,6 +75,7 @@ class CommentCourse(models.Model):
 
 
 class Question(models.Model):
+    '''Класс для вопросов к урокам'''
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='questions')
     text = models.CharField(max_length=255)
 
@@ -78,6 +84,7 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
+    '''Класс для ответов на вопросы'''
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
     text = models.CharField(max_length=255)
     is_correct = models.BooleanField(default=False)
