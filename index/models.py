@@ -46,7 +46,7 @@ class Course(models.Model):
     def __str__(self):
         return self.title
     
-from django.contrib.auth.models import User
+
 class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
     title = models.CharField(max_length=100)
@@ -58,6 +58,7 @@ class Lesson(models.Model):
     def __str__(self):
         return self.title
     
+    
 class CommentCourse(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
@@ -67,12 +68,14 @@ class CommentCourse(models.Model):
     def __str__(self):
         return f'Комментарий от {self.user.username} к {self.lesson.title}'
 
+
 class Question(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='questions')
     text = models.CharField(max_length=255)
 
     def __str__(self):
         return self.text
+
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
