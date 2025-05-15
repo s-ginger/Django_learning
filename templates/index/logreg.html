@@ -83,16 +83,29 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'chat' %}">Chat</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'courses' %}">Courses</a></li>
+                <li class="nav-item">
+                {% if user.is_staff %}
+                    <a class="nav-link" href="{% url 'create_lesson' %}">Create Lesson</a>
+                {% endif %}
+</li>
+
+               
             </ul>
             <ul class="navbar-nav">
-                {% if user.is_authenticated %}
-                    <li class="nav-item"><span class="nav-link">Hi, {{ user.username }}</span></li>
-                    <li class="nav-item"><a class="btn btn-outline-light" href="{% url 'logout' %}">Logout</a></li>
-                {% else %}
-                    <li class="nav-item"><a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a></li>
-                    <li class="nav-item"><a class="btn btn-primary" href="{% url 'register' %}">Register</a></li>
-                {% endif %}
-            </ul>
+    {% if user.is_authenticated %}
+        <li class="nav-item"><span class="nav-link">Hi, {{ user.username }}</span></li>
+        <li class="nav-item">
+            <a class="btn btn-outline-info me-2" href="{% url 'profile' %}">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-outline-light" href="{% url 'logout' %}">Logout</a>
+        </li>
+    {% else %}
+        <li class="nav-item"><a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a></li>
+        <li class="nav-item"><a class="btn btn-primary" href="{% url 'register' %}">Register</a></li>
+    {% endif %}
+</ul>
+
         </div>
     </div>
 </nav>
