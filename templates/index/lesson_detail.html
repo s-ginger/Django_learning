@@ -65,7 +65,7 @@
     {% for comment in comments %}
       <div class="bg-gray-800 p-6 rounded-lg shadow-md">
         <div class="text-purple-400 text-lg">{{ comment.user.username }} <span class="text-gray-400 text-sm">{{ comment.created_at|date:"d.m.Y H:i" }}</span></div>
-        <p class="text-gray-300">{{ comment.text }}</p>
+        <p class="text-gray-300">{{ comment.content }}</p>
       </div>
     {% empty %}
       <p class="text-gray-500">Пока нет комментариев.</p>
