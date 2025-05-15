@@ -29,7 +29,8 @@ from index.views import (
     chat,
     courses_view,create_lesson, 
     course_lessons_view,lesson_detail_view,
-    profile_view,profile
+    profile_view,profile,
+    lesson_read
 )
 
 
@@ -49,4 +50,5 @@ urlpatterns = [
     path('lesson/<int:lesson_id>/', lesson_detail_view, name='lesson_detail'),
     path('course/<int:course_id>/lessons/', course_lessons_view, name='course_lessons'),  # Страница с уроками курса
     path('profile/', profile_view, name='profile'),  # Страница профиля
+    path('isreadles/<int:lesson_id>', lesson_read, name='isreadles'),  
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

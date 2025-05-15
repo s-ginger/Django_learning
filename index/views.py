@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 from .models import Course, Lesson, CommentCourse, Comment
 from .forms import CustomUserForm, LoginForm, CommentForm, CommentCourseForm, LessonForm
 from django.shortcuts import get_object_or_404, redirect, render
+from .forms import LessonForm, CourseForm
+from django.forms import inlineformset_factory
+from .models import Test, Question, Answer
+from .forms import TestForm, QuestionForm, AnswerForm
 
 
 def main_page(request):
@@ -96,11 +100,6 @@ def profile_view(request):
 def profile(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
 
-from .forms import LessonForm, CourseForm
-from django.forms import inlineformset_factory
-from .models import Test, Question, Answer
-from .forms import TestForm, QuestionForm, AnswerForm
-
 
 @login_required
 def create_lesson(request):
@@ -182,3 +181,15 @@ def lesson_detail_view(request, lesson_id):
     }
     return render(request, 'index/lesson_detail.html', context)
 
+
+def lesson_read(request, lesson_id):
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+    lesson.isRead = True
+    lesson.save()
+    next = lesson.course.lessons.filter(id__gt=lesson.id).first()
+    if next:
+        return redirect('lesson_detail', lesson_id=next.id)
+    else:
+        # Если это последний урок, можно перенаправить на курс или другую страницу
+        return redirect('course_lessons', course_id=lesson.course.id)
+    

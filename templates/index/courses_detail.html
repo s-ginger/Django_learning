@@ -162,6 +162,11 @@
           <a href="{% url 'lesson_detail' lesson.id %}">
             <h5>{{ lesson.title }}</h5>
             <p class="mt-2 text-white" style="font-size: 0.9rem;">Создан: {{ lesson.created_at|date:"d.m.Y" }}</p>
+            {% if lesson.isRead %}
+              <p class="text-success">Урок прочитан</p>
+            {% else %}
+              <p class="text-danger">Урок не прочитан</p>
+            {% endif %}
           </a>
         </div>
       </div>
