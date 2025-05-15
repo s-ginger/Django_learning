@@ -97,10 +97,10 @@ def profile(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
 
 from .forms import LessonForm, CourseForm
+
 from django.forms import inlineformset_factory
 from .models import Test, Question, Answer
 from .forms import TestForm, QuestionForm, AnswerForm
-
 
 @login_required
 def create_lesson(request):
@@ -112,6 +112,7 @@ def create_lesson(request):
     test_form = TestForm(user=request.user)
     QuestionFormSet = inlineformset_factory(Test, Question, form=QuestionForm, extra=1)
     question_formset = None
+    answer_formset = None
 
     if request.method == 'POST':
         if 'create_course' in request.POST:
@@ -124,31 +125,36 @@ def create_lesson(request):
         elif 'create_lesson' in request.POST:
             lesson_form = LessonForm(request.POST, request.FILES, user=request.user)
             if lesson_form.is_valid():
-                lesson = lesson_form.save(commit=True)  # просто сохраняем, курс уже в форме
+                lesson = lesson_form.save(commit=False)
+                lesson.course = lesson_form.cleaned_data['course']
+                lesson.save()
                 messages.success(request, "Lesson created successfully!")
                 return redirect('course_lessons', course_id=lesson.course.id)
-            else:
-                messages.error(request, f"Ошибка в форме урока: {lesson_form.errors}")
 
         elif 'create_test' in request.POST:
             test_form = TestForm(request.POST, user=request.user)
             if test_form.is_valid():
                 test = test_form.save(commit=False)
                 test.save()
+                # Создаем formset для вопросов к этому тесту
                 question_formset = QuestionFormSet(request.POST, instance=test)
                 if question_formset.is_valid():
-                    question_formset.save()
+                    questions = question_formset.save(commit=False)
+                    for question in questions:
+                        question.test = test
+                        question.save()
                     messages.success(request, "Test and questions created successfully!")
                     return redirect('create_lesson')
                 else:
-                    messages.error(request, "Ошибка в вопросах теста")
+                    messages.error(request, "Error with questions formset")
             else:
-                messages.error(request, "Ошибка в форме теста")
+                messages.error(request, "Error with test form")
+
     else:
         question_formset = QuestionFormSet()
 
     context = {
-        'form1': lesson_form,
+        'form': lesson_form,
         'course_form': course_form,
         'test_form': test_form,
         'question_formset': question_formset,
