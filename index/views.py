@@ -11,7 +11,8 @@ from .models import (
     Comment, 
     Test, 
     Question, 
-    Answer
+    Answer,
+    LessonProgress
 )
 
 from .forms import (
@@ -181,6 +182,23 @@ def create_lesson(request):
 def lesson_detail_view(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
     
+    if request.user.is_authenticated:
+        # Получаем или создаём прогресс
+        progress, created = LessonProgress.objects.get_or_create(user=request.user, lesson=lesson)
+
+        # Обновляем статус на прочитано
+        if not progress.is_read:
+            progress.is_read = True
+            progress.save()
+            
+        progress_dict = {}
+    if request.user.is_authenticated:
+        lessons = Lesson.objects.filter(course=lesson.course)  # ✅ ЭТОГО НЕ ХВАТАЛО
+        progresses = LessonProgress.objects.filter(user=request.user, lesson__in=lessons)
+        progress_dict = {p.lesson_id: p.is_read for p in progresses}
+
+        
+    print(f"Progress: {progress.is_read}")  
     # Получаем все уроки курса и находим следующий по id
     course_lessons = Lesson.objects.filter(course=lesson.course).order_by('id')
     next_lesson = course_lessons.filter(id__gt=lesson.id).first()
@@ -200,15 +218,24 @@ def lesson_detail_view(request, lesson_id):
         'lesson': lesson,
         'next_lesson': next_lesson,
         'comments': comments,
-        'form': form
+        'form': form,
+        'progress_dict': progress_dict,
     }
     return render(request, 'index/lesson_detail.html', context)
 
 
 def lesson_read(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
-    lesson.isRead = True
-    lesson.save()
+    
+    lesson_progress, created = LessonProgress.objects.get_or_create(
+        user=request.user,
+        lesson=lesson,
+        defaults={'is_read': True}
+    )
+    if not created:
+        lesson_progress.is_read = True
+    lesson_progress.save()
+    
     next = lesson.course.lessons.filter(id__gt=lesson.id).first()
     if next:
         return redirect('lesson_detail', lesson_id=next.id)
