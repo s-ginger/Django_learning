@@ -48,11 +48,9 @@
 
     <div class="mb-6 flex justify-between items-center">
       <a href="{% url 'course_lessons' lesson.course.id %}" class="btn btn-secondary text-white bg-gray-600 px-4 py-2 rounded-lg shadow-lg hover:bg-gray-500 transition">← Назад к курсу</a>
-      {% if next_lesson %}
-        <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary text-white bg-purple-600 px-4 py-2 rounded-lg shadow-lg hover:bg-purple-500 transition">Следующий урок → {{ next_lesson.title }}</a>
-      {% else %}
-        <p class="text-gray-400">Это последний урок.</p>
-      {% endif %}
+    
+      <a href="{% url 'isreadles' lesson.id %}" class="btn btn-primary text-white bg-purple-600 px-4 py-2 rounded-lg shadow-lg hover:bg-purple-500 transition">Следующий урок → {{ next_lesson.title }}</a>
+      
     </div>
   </div>
 

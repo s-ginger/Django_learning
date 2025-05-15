@@ -48,7 +48,18 @@ class Course(models.Model):
     
     def __str__(self):
         return self.title
-    
+
+class LessonProgress(models.Model):
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+    lesson = models.ForeignKey('Lesson', on_delete=models.CASCADE)
+    is_read = models.BooleanField(default=False)
+    read_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'lesson')  # Один пользователь — один урок
+
+    def __str__(self):
+        return f"{self.user.username} - {self.lesson.title} - {'Прочитан' if self.is_read else 'Не прочитан'}"
 
 class Lesson(models.Model):
     '''Класс для уроков'''
@@ -56,6 +67,7 @@ class Lesson(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     image = models.ImageField(upload_to='lesson_images/', null=True, blank=True)
+    #isRead = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
