@@ -36,19 +36,18 @@
     <h2>Create a New Lesson</h2>
     <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form1.as_p }}
+    {{ form.as_p }}
     <button type="submit" name="create_lesson">Создать урок</button>
 </form>
-
 
     <hr class="my-5">
 
     <h3>Create a New Course</h3>
-    <form method="POST">
-        {% csrf_token %}
-        {{ course_form.as_p }}
-        <button type="submit" name="create_course" class="btn btn-outline-info">Create Course</button>
-    </form>
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ course_form.as_p }}
+    <button type="submit" name="create_course">Создать урок</button>
+</form>
 </div>
 </body>
 </html>
