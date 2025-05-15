@@ -1,15 +1,32 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout as auth_logout
 from django.contrib import messages
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Course, Lesson, CommentCourse, Comment
-from .forms import CustomUserForm, LoginForm, CommentForm, CommentCourseForm, LessonForm
-from django.shortcuts import get_object_or_404, redirect, render
-from .forms import LessonForm, CourseForm
 from django.forms import inlineformset_factory
-from .models import Test, Question, Answer
-from .forms import TestForm, QuestionForm, AnswerForm
+
+from .models import (
+    Course, 
+    Lesson, 
+    CommentCourse, 
+    Comment, 
+    Test, 
+    Question, 
+    Answer
+)
+
+from .forms import (
+    CustomUserForm, 
+    LoginForm, 
+    CommentForm, 
+    CommentCourseForm, 
+    LessonForm, 
+    CourseForm, 
+    TestForm, 
+    QuestionForm, 
+    AnswerForm
+)
+
+
 
 
 def main_page(request):
@@ -157,7 +174,7 @@ def create_lesson(request):
 
 def lesson_detail_view(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
-
+    
     # Получаем все уроки курса и находим следующий по id
     course_lessons = Lesson.objects.filter(course=lesson.course).order_by('id')
     next_lesson = course_lessons.filter(id__gt=lesson.id).first()
