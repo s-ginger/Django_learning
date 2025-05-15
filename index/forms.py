@@ -20,6 +20,23 @@ class LessonForm(forms.ModelForm):
             # Ограничиваем выбор курсов только для тех, которые принадлежат учителю
             self.fields['course'].queryset = Course.objects.filter(instructor=user)
 
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ['title', 'description']
+
+    def __init__(self, *args, instructor=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.instructor = instructor
+
+    def save(self, commit=True):
+        course = super().save(commit=False)
+        if self.instructor:
+            course.instructor = self.instructor
+        if commit:
+            course.save()
+        return course
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150, required=True)
@@ -58,4 +75,28 @@ class CommentCourseForm(forms.ModelForm):
             })
         }
 
+from django import forms
+from django.forms import inlineformset_factory
+from .models import Test, Question, Answer
+class TestForm(forms.ModelForm):
+    class Meta:
+        model = Test
+        fields = ['title', 'course']
 
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['course'].queryset = Course.objects.filter(instructor=user)
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['text']
+
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['text', 'is_correct']
+
+QuestionFormSet = inlineformset_factory(Test, Question, form=QuestionForm, extra=1)
+AnswerFormSet = inlineformset_factory(Question, Answer, form=AnswerForm, extra=4)

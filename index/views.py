@@ -67,9 +67,14 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserForm(request.POST)
         if form.is_valid():
-            form.save()  # Сохраняем нового пользователя через кастомную форму
-            messages.success(request, f'Account created for {form.cleaned_data.get("username")}!')
-            return redirect('login')  # Перенаправляем на страницу логина
+            user = form.save()
+            username = form.cleaned_data.get("username")
+            raw_password = form.cleaned_data.get("password1")
+            user = authenticate(username=username, password=raw_password)
+        if user:
+            login(request, user)
+            messages.success(request, f'Welcome, {username}!')
+            return redirect('main')  # Можно перенаправить на профиль или главную страницу      
         else:
             messages.error(request, 'There was an error with your registration form.')
     else:
@@ -91,23 +96,64 @@ def profile_view(request):
 def profile(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
 
+from .forms import LessonForm, CourseForm
+from django.forms import inlineformset_factory
+from .models import Test, Question, Answer
+from .forms import TestForm, QuestionForm, AnswerForm
+
 
 @login_required
 def create_lesson(request):
     if request.user.role != 'teacher':
-        return redirect('main')  # Если пользователь не учитель, перенаправляем на главную страницу
+        return redirect('main')
+
+    lesson_form = LessonForm(user=request.user)
+    course_form = CourseForm()
+    test_form = TestForm(user=request.user)
+    QuestionFormSet = inlineformset_factory(Test, Question, form=QuestionForm, extra=1)
+    question_formset = None
 
     if request.method == 'POST':
-        form = LessonForm(request.POST, request.FILES, user=request.user)  # Передаем пользователя в форму
-        if form.is_valid():
-            lesson = form.save(commit=False)
-            lesson.course = form.cleaned_data['course']
-            lesson.save()
-            return redirect('course_lessons', course_id=lesson.course.id)  # Перенаправляем на страницу курса
-    else:
-        form = LessonForm(user=request.user)  # Передаем пользователя при GET-запросе
+        if 'create_course' in request.POST:
+            course_form = CourseForm(request.POST, instructor=request.user)
+            if course_form.is_valid():
+                course_form.save()
+                messages.success(request, "Course created successfully!")
+                return redirect('create_lesson')
 
-    return render(request, 'index/create_lesson.html', {'form': form})
+        elif 'create_lesson' in request.POST:
+            lesson_form = LessonForm(request.POST, request.FILES, user=request.user)
+            if lesson_form.is_valid():
+                lesson = lesson_form.save(commit=True)  # просто сохраняем, курс уже в форме
+                messages.success(request, "Lesson created successfully!")
+                return redirect('course_lessons', course_id=lesson.course.id)
+            else:
+                messages.error(request, f"Ошибка в форме урока: {lesson_form.errors}")
+
+        elif 'create_test' in request.POST:
+            test_form = TestForm(request.POST, user=request.user)
+            if test_form.is_valid():
+                test = test_form.save(commit=False)
+                test.save()
+                question_formset = QuestionFormSet(request.POST, instance=test)
+                if question_formset.is_valid():
+                    question_formset.save()
+                    messages.success(request, "Test and questions created successfully!")
+                    return redirect('create_lesson')
+                else:
+                    messages.error(request, "Ошибка в вопросах теста")
+            else:
+                messages.error(request, "Ошибка в форме теста")
+    else:
+        question_formset = QuestionFormSet()
+
+    context = {
+        'form1': lesson_form,
+        'course_form': course_form,
+        'test_form': test_form,
+        'question_formset': question_formset,
+    }
+    return render(request, 'index/create_lesson.html', context)
 
 
 def lesson_detail_view(request, lesson_id):
@@ -135,3 +181,4 @@ def lesson_detail_view(request, lesson_id):
         'form': form
     }
     return render(request, 'index/lesson_detail.html', context)
+
