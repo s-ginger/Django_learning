@@ -118,14 +118,6 @@ def profile_view(request):
 def profile(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
 
-<<<<<<< HEAD
-from .forms import LessonForm, CourseForm
-
-from django.forms import inlineformset_factory
-from .models import Test, Question, Answer
-from .forms import TestForm, QuestionForm, AnswerForm
-=======
->>>>>>> 7246616fda1a9eb21260dbea685ef0c2bb6768eb
 
 @login_required
 def create_lesson(request):
