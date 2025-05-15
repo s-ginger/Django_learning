@@ -124,38 +124,58 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'chat' %}">Chat</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'courses' %}">Courses</a></li>
+                <li class="nav-item">
+                {% if user.is_staff %}
+                    <a class="nav-link" href="{% url 'create_lesson' %}">Create Lesson</a>
+                {% endif %}
+</li>
+
+               
             </ul>
             <ul class="navbar-nav">
-                {% if user.is_authenticated %}
-                    <li class="nav-item"><span class="nav-link">Hi, {{ user.username }}</span></li>
-                    <li class="nav-item"><a class="btn btn-outline-light" href="{% url 'logout' %}">Logout</a></li>
-                {% else %}
-                    <li class="nav-item"><a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a></li>
-                    <li class="nav-item"><a class="btn btn-primary" href="{% url 'register' %}">Register</a></li>
-                {% endif %}
-            </ul>
+    {% if user.is_authenticated %}
+        <li class="nav-item"><span class="nav-link">Hi, {{ user.username }}</span></li>
+        <li class="nav-item">
+            <a class="btn btn-outline-info me-2" href="{% url 'profile' %}">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-outline-light" href="{% url 'logout' %}">Logout</a>
+        </li>
+    {% else %}
+        <li class="nav-item"><a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a></li>
+        <li class="nav-item"><a class="btn btn-primary" href="{% url 'register' %}">Register</a></li>
+    {% endif %}
+</ul>
+
         </div>
     </div>
 </nav>
 
 <!-- Курсы -->
 <section class="section container">
-  <h2 class="section-title">Все доступные курсы</h2>
-  <div class="row g-4">
-    {% for course in courses %}
-      <div class="col-md-4">
-        <div class="course-card">
-          <h5>{{ course.title }}</h5>
-          <p>{{ course.description|slice:":100" }}...</p>
-          <!-- Кнопка для перехода на страницу курса -->
-         <a href="{% url 'course_lessons' course.id %}" class="btn btn-gradient">Перейти к курсу</a>
+  {% if user.is_authenticated %}
+    <h2 class="section-title">Все доступные курсы</h2>
+    <div class="row g-4">
+      {% for course in courses %}
+        <div class="col-md-4">
+          <div class="course-card">
+            <h5>{{ course.title }}</h5>
+            <p>{{ course.description|slice:":100" }}...</p>
+            <a href="{% url 'course_lessons' course.id %}" class="btn btn-gradient">Перейти к курсу</a>
+          </div>
         </div>
-      </div>
-    {% empty %}
-      <p>Курсы пока не добавлены.</p>
-    {% endfor %}
-  </div>
+      {% empty %}
+        <p>Курсы пока не добавлены.</p>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center">
+      <h2 class="section-title">Доступ к курсам только для авторизованных пользователей</h2>
+      <p>Пожалуйста, <a href="{% url 'login' %}" class="text-info">войдите</a> или <a href="{% url 'register' %}" class="text-info">зарегистрируйтесь</a>, чтобы увидеть доступные курсы.</p>
+    </div>
+  {% endif %}
 </section>
+
 
 <!-- Footer -->
 <footer class="footer text-center text-white">
