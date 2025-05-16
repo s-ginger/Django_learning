@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import  AbstractBaseUser
 from mydjango.settings import AUTH_USER_MODEL
 
 # Create your models here.
@@ -60,7 +61,6 @@ class LessonProgress(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.lesson.title} - {'Прочитан' if self.is_read else 'Не прочитан'}"
 
-
 class Lesson(models.Model):
     '''Класс для уроков'''
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
@@ -85,7 +85,6 @@ class CommentCourse(models.Model):
     def __str__(self):
         return f'Комментарий от {self.user.username} к {self.lesson.title}'
 
-
 class Test(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='tests')
     title = models.CharField(max_length=255)
@@ -95,18 +94,17 @@ class Test(models.Model):
     def __str__(self):
         return self.title
 
+class Question(models.Model):
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='questions')
+    text = models.TextField()
 
-# class Question(models.Model):
-#     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='questions')
-#     text = models.TextField()
+    def __str__(self):
+        return self.text
 
-#     def __str__(self):
-#         return self.text
+class Answer(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
+    text = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
 
-# class Answer(models.Model):
-#     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
-#     text = models.CharField(max_length=255)
-#     is_correct = models.BooleanField(default=False)
-
-#     def __str__(self):
-#         return f"{self.text} ({'Correct' if self.is_correct else 'Wrong'})"
+    def __str__(self):
+        return f"{self.text} ({'Correct' if self.is_correct else 'Wrong'})"

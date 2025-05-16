@@ -1,7 +1,9 @@
 from django import forms
+from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from .models import Comment, CustomUser, Test, Lesson, Course, CommentCourse
+from .models import Comment, CustomUser, Lesson, Course, CommentCourse
+
 
 
 class LessonForm(forms.ModelForm):
@@ -14,7 +16,6 @@ class LessonForm(forms.ModelForm):
         if user:
             # Ограничиваем выбор курсов только для тех, которые принадлежат учителю
             self.fields['course'].queryset = Course.objects.filter(instructor=user)
-
 
 class CourseForm(forms.ModelForm):
     class Meta:
@@ -71,7 +72,9 @@ class CommentCourseForm(forms.ModelForm):
             })
         }
 
-
+from django import forms
+from django.forms import inlineformset_factory
+from .models import Test, Question, Answer
 class TestForm(forms.ModelForm):
     class Meta:
         model = Test
@@ -82,15 +85,15 @@ class TestForm(forms.ModelForm):
         if user:
             self.fields['course'].queryset = Course.objects.filter(instructor=user)
 
-# class QuestionForm(forms.ModelForm):
-#     class Meta:
-#         model = Question
-#         fields = ['text']
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['text']
 
-# class AnswerForm(forms.ModelForm):
-#     class Meta:
-#         model = Answer
-#         fields = ['text', 'is_correct']
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['text', 'is_correct']
 
-# QuestionFormSet = inlineformset_factory(Test, Question, form=QuestionForm, extra=1)
-# AnswerFormSet = inlineformset_factory(Question, Answer, form=AnswerForm, extra=4)
+QuestionFormSet = inlineformset_factory(Test, Question, form=QuestionForm, extra=1)
+AnswerFormSet = inlineformset_factory(Question, Answer, form=AnswerForm, extra=4)
