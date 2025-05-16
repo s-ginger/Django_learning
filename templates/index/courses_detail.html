@@ -187,7 +187,32 @@
     {% endfor %}
   </div>
 </section>
+<!-- tests -->
+<section class="container my-5">
+  <h2 class="section-title">{{ course.title }}</h2>
+  <p class="section-description">{{ course.description }}</p>
 
+  <h4 class="mb-4 text-light">Уроки курса</h4>
+  <div class="row">
+    {% for lesson in lessons %}
+      <div class="col-md-6">
+        <div class="lesson-card">
+          <a href="{% url 'lesson_detail' lesson.id %}">
+            <h5>{{ lesson.title }}</h5>
+            <p class="mt-2 text-white" style="font-size: 0.9rem;">Создан: {{ lesson.created_at|date:"d.m.Y" }}</p>
+            {% if progress_dict.lesson.id %}
+              <p class="text-green-400">Урок прочитан ✅</p>
+            {% else %}
+              <p class="text-yellow-400">Урок не прочитан</p>
+            {% endif %}
+          </a>
+        </div>
+      </div>
+    {% empty %}
+      <p>У этого курса пока нет уроков.</p>
+    {% endfor %}
+  </div>
+</section>
 <!-- Footer -->
 <footer>
   <div class="container">
