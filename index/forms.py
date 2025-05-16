@@ -2,11 +2,8 @@ from django import forms
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from .models import Comment, CustomUser
-from .models import Lesson, Course
-from .models import CommentCourse
-from django import forms
-from .models import CommentCourse
+from .models import Comment, CustomUser, Lesson, Course, CommentCourse
+
 
 
 class LessonForm(forms.ModelForm):
