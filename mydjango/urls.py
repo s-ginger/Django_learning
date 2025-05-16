@@ -30,13 +30,14 @@ from index.views import (
     courses_view,create_lesson, 
     course_lessons_view,lesson_detail_view,
     profile_view,profile,
-    lesson_read
+    lesson_read,tests_view
 )
 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('tests/', tests_view, name='tests'),
     path('profile/', profile, name='profile'),
     path('', main_page, name='main'),
     path('courses/', courses_view, name='courses'),

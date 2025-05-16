@@ -114,7 +114,8 @@ def course_lessons_view(request, course_id):
 def profile_view(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
 
-
+def tests_view(request):
+    return render(request, 'index/test.html')
 def profile(request):
     return render(request, 'index/cabinet.html', {'user': request.user})
 
