@@ -122,7 +122,6 @@ def create_lesson(request):
     lesson_form = LessonForm(user=request.user)
     course_form = CourseForm()
     test_form = TestForm(user=request.user)
-    QuestionFormSet = inlineformset_factory(Test, Question, form=QuestionForm, extra=1)
     question_formset = None
     answer_formset = None
 
@@ -149,21 +148,9 @@ def create_lesson(request):
                 test = test_form.save(commit=False)
                 test.save()
                 # Создаем formset для вопросов к этому тесту
-                question_formset = QuestionFormSet(request.POST, instance=test)
-                if question_formset.is_valid():
-                    questions = question_formset.save(commit=False)
-                    for question in questions:
-                        question.test = test
-                        question.save()
-                    messages.success(request, "Test and questions created successfully!")
-                    return redirect('create_lesson')
-                else:
-                    messages.error(request, "Error with questions formset")
             else:
                 messages.error(request, "Error with test form")
-
-    else:
-        question_formset = QuestionFormSet()
+       
 
     context = {
         'form': lesson_form,
