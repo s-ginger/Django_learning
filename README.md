@@ -24,12 +24,14 @@
 ```bash
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
+```
 
 ### 2. Нужно принять миграции
 
 ```bash 
 python manage.py makemigrations
 python manage.py migrate
+```
 
 ### 3. Вам нужно будет сделать свой .env в корне проекта файл указав туда все необходимое
 
@@ -38,3 +40,4 @@ python manage.py migrate
 
 ```bash
 python manage.py runserver
+```
