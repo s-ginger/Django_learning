@@ -10,8 +10,6 @@ from .models import (
     CommentCourse, 
     Comment, 
     Test, 
-    Question, 
-    Answer,
     LessonProgress
 )
 
@@ -23,8 +21,6 @@ from .forms import (
     LessonForm, 
     CourseForm, 
     TestForm, 
-    QuestionForm, 
-    AnswerForm
 )
 
 
