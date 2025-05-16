@@ -29,7 +29,6 @@ from .forms import (
 
 
 
-
 def main_page(request):
     return render(request, 'index/mainpage.html', {'user': request.user if request.user.is_authenticated else None})
 
