@@ -191,7 +191,7 @@ def lesson_detail_view(request, lesson_id):
             progress.is_read = True
             progress.save()
             
-        progress_dict = {}
+    progress_dict = {}
     if request.user.is_authenticated:
         lessons = Lesson.objects.filter(course=lesson.course)  # ✅ ЭТОГО НЕ ХВАТАЛО
         progresses = LessonProgress.objects.filter(user=request.user, lesson__in=lessons)
